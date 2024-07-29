@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 class TodoList extends Component
 {
     use WithPagination;
-
+    
     
     #[Rule('required|min:3|max:50')]
     public $name;
@@ -22,6 +22,7 @@ class TodoList extends Component
     public $editingTodoName;
     
     protected $todoHelper;
+    public $modalOpen = false;
 
     public function mount(){
         $this->todoHelper = new TodoHelper();
@@ -37,10 +38,16 @@ class TodoList extends Component
         $validated = $this->validateOnly('name');
         //create the todo
         $this->todoHelper->createTodo($validated['name']);
+        $this->modalOpen = false;
         // clear the input
         $this->reset('name');
         //send the flash message
         Session::flash('success', 'Saved.');
+    }
+
+
+    public function createModalOpen(){
+        $this->modalOpen = true;
     }
 
     // public function delete(Todo $todo){

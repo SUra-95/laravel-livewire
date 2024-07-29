@@ -6,27 +6,41 @@ use App\Models\Todo;
 use Livewire\Component;
 use Livewire\Attributes\Rule;
 use Livewire\WithPagination;
+use App\Helpers\TodoHelper;
+use Illuminate\Support\Facades\Session;
 
 class TodoList extends Component
 {
     use WithPagination;
 
+    
     #[Rule('required|min:3|max:50')]
     public $name;
     public $search;
     public $editingTodoID;
     #[Rule('required|min:3|max:50')]
     public $editingTodoName;
+    
+    protected $todoHelper;
 
+    public function mount(){
+        $this->todoHelper = new TodoHelper();
+    }
+    
     public function create(){
+        // Check if $todoHelper is not set and initialize it
+        if (!$this->todoHelper) {
+            $this->todoHelper = new TodoHelper();
+        }
+
         // validate
         $validated = $this->validateOnly('name');
         //create the todo
-        Todo::create($validated);
+        $this->todoHelper->createTodo($validated['name']);
         // clear the input
         $this->reset('name');
         //send the flash message
-        // session()->flash('success', 'Saved.');
+        Session::flash('success', 'Saved.');
     }
 
     // public function delete(Todo $todo){
@@ -40,12 +54,13 @@ class TodoList extends Component
     }
 
     public function delete($todoID){
-        Todo::find($todoID)->delete();
+        TodoHelper::deleteTodo($todoID);
     }
 
     public function edit($todoID){
         $this->editingTodoID = $todoID;
-        $this->editingTodoName = Todo::find($todoID)->name;
+        $this->editingTodoName = '';
+        TodoHelper::editTodo($this->editingTodoID, $this->editingTodoName);
     }
 
     public function cancelEdit(){
@@ -53,16 +68,11 @@ class TodoList extends Component
     }
     public function update(){
         $this->validateOnly('editingTodoName');
-        Todo::find($this->editingTodoID)->update(
-            [
-                'name' => $this->editingTodoName,
-            ]
-            );
+        TodoHelper::updateTodo($this->editingTodoID, $this->editingTodoName);
             $this->cancelEdit();
     }
 
-    public function render()
-    {
+    public function render(){
         return view('livewire.todo-list', [
             'todos' => Todo::latest()->where('name', 'like', "%{$this->search}%")->paginate(3)
         ]);

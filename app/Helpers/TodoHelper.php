@@ -6,9 +6,8 @@ use App\Models\Todo;
 
 class TodoHelper
 {
-    public static function createTodo($name)
+    public static function createTodo($validated)
     {
-        $validated = ['name' => $name];
         Todo::create($validated);
     }
 

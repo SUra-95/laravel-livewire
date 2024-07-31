@@ -8,18 +8,18 @@ use Livewire\Attributes\Rule;
 use Livewire\WithPagination;
 use App\Helpers\TodoHelper;
 use Illuminate\Support\Facades\Session;
+use Livewire\WithFileUploads;
 
 class TodoList extends Component
 {
     use WithPagination;
+    use WithFileUploads;
     
-    
-    #[Rule('required|min:3|max:50')]
     public $name;
     public $search;
     public $editingTodoID;
-    #[Rule('required|min:3|max:50')]
     public $editingTodoName;
+    public $image;
     
     protected $todoHelper;
     public $modalOpen = false;
@@ -33,14 +33,21 @@ class TodoList extends Component
         if (!$this->todoHelper) {
             $this->todoHelper = new TodoHelper();
         }
-
+        $rules = [
+            'name' => 'required|min:3|max:50',
+            'image' => 'required|sometimes|image|max:2048|mimes:jpeg,png,jpg',
+        ];
         // validate
-        $validated = $this->validateOnly('name');
+        $validated = $this->validate($rules);
+        // image upload 
+        if ($this->image) {
+            $validated['image'] = $this->image->store('uploads', 'public');
+        }
         //create the todo
-        $this->todoHelper->createTodo($validated['name']);
-        $this->modalOpen = false;
+        $this->todoHelper->createTodo($validated);
+        $this->modalOpen = true;
         // clear the input
-        $this->reset('name');
+        $this->reset('name', 'image');
         //send the flash message
         Session::flash('success', 'Saved.');
     }

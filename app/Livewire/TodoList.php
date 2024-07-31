@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Todo;
 use Livewire\Component;
-use Livewire\Attributes\Rule;
 use Livewire\WithPagination;
 use App\Helpers\TodoHelper;
 use Illuminate\Support\Facades\Session;
@@ -20,7 +19,6 @@ class TodoList extends Component
     public $editingTodoID;
     public $editingTodoName;
     public $image;
-    
     protected $todoHelper;
     public $modalOpen = false;
 

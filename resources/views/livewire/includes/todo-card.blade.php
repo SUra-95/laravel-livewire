@@ -45,7 +45,8 @@
         </div>
     </div>
     <span class="text-xs text-gray-500"> {{ $todo->created_at }} </span>
-    <img class="rounded w-10 h-10 mt-5 block" src="{{ env('APP_URL') }}/storage/{{ $todo->image }}" alt="">
+    <img class="rounded w-10 h-10 mt-5 block" 
+    src="{{ env('APP_URL') }}/storage/{{ $todo->image }}" alt="">
     <div class="mt-3 text-xs text-gray-700">
         @if ($editingTodoID === $todo->id)
             <button wire:click="update"

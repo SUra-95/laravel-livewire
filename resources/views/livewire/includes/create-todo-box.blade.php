@@ -92,9 +92,7 @@
 
 
                     <div class="flex justify-center items-center">
-                        <button {{-- wire:click="isOpen= true" 
-                        x-on:click="isOpen : true"  --}} 
-                        x-on:click="isOpen = true"
+                        <button x-on:click="isOpen = true"
                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Create +
                         </button>

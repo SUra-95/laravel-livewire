@@ -7,16 +7,18 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Helpers\TodoHelper;
 use Illuminate\Support\Facades\Session;
+use Livewire\Attributes\Rule;
 use Livewire\WithFileUploads;
 
 class TodoList extends Component
 {
     use WithPagination;
     use WithFileUploads;
-    
+
     public $name;
     public $search;
     public $editingTodoID;
+    #[Rule('required|min:5|max:50')]
     public $editingTodoName;
     public $image;
     protected $todoHelper;
@@ -80,8 +82,9 @@ class TodoList extends Component
     }
     public function update(){
         $this->validateOnly('editingTodoName');
+    
         TodoHelper::updateTodo($this->editingTodoID, $this->editingTodoName);
-            $this->cancelEdit();
+        $this->cancelEdit();
     }
 
     public function render(){
